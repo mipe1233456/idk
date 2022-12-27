@@ -1,0 +1,81 @@
+-- Declare variables for the player and the character
+local player = game.Players.LocalPlayer
+local character = player.Character
+
+-- Create a GUI for the player to use
+local gui = Instance.new("ScreenGui")
+local tpButton = Instance.new("TextButton")
+local flyButton = Instance.new("TextButton")
+local speedButton = Instance.new("TextButton")
+
+-- Set the properties of the GUI and buttons
+gui.Name = "TeleportGUI"
+tpButton.Name = "TeleportButton"
+tpButton.Text = "Teleport (P)"
+tpButton.Parent = gui
+flyButton.Name = "FlyButton"
+flyButton.Text = "Fly (F)"
+flyButton.Parent = gui
+speedButton.Name = "SpeedButton"
+speedButton.Text = "Speed (T)"
+speedButton.Parent = gui
+
+-- Create a function to teleport the player to another player
+function teleportToPlayer(player)
+  -- Get the target player
+  local targetPlayer = game.Players:GetPlayerFromCharacter(player.Character)
+  if targetPlayer then
+    -- Teleport the player to the target player's character
+    character:MoveTo(targetPlayer.Character.Head.Position)
+  end
+end
+
+-- Create a function to toggle flying for the player
+function toggleFlying()
+  -- Check if the character has a HumanoidRootPart
+  if character:FindFirstChild("HumanoidRootPart") then
+    -- Get the HumanoidRootPart
+    local rootPart = character:FindFirstChild("HumanoidRootPart")
+    
+    -- Toggle flying for the character
+    if rootPart.CanCollide then
+      rootPart.CanCollide = false
+      rootPart.Velocity = Vector3.new(0, 50, 0)
+    else
+      rootPart.CanCollide = true
+      rootPart.Velocity = Vector3.new(0, 0, 0)
+    end
+  end
+end
+
+-- Create a function to toggle speed for the player
+function toggleSpeed()
+  -- Check if the character has a Humanoid
+  if character:FindFirstChild("Humanoid") then
+    -- Get the Humanoid
+    local humanoid = character:FindFirstChild("Humanoid")
+    
+    -- Toggle speed for the character
+    if humanoid.WalkSpeed == 16 then
+      humanoid.WalkSpeed = 50
+    else
+      humanoid.WalkSpeed = 16
+    end
+  end
+end
+
+-- Connect the buttons to their respective functions
+tpButton.MouseButton1Click:Connect(function()
+  teleportToPlayer(player)
+end)
+
+flyButton.MouseButton1Click:Connect(function()
+  toggleFlying()
+end)
+
+speedButton.MouseButton1Click:Connect(function()
+  toggleSpeed()
+end)
+
+-- Add the GUI to the player's screen
+gui.Parent = player.PlayerGui
